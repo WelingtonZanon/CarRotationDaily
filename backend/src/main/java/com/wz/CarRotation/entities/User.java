@@ -2,13 +2,18 @@ package com.wz.CarRotation.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table (name = "tb_user")
@@ -23,6 +28,11 @@ public class User implements Serializable{
 	private String identity;
 	@Column (columnDefinition= "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant birthDate;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user")
+	private List<Vehicle> vehicle = new ArrayList<>();
+	
 	
 	public User() {
 		
@@ -86,6 +96,10 @@ public class User implements Serializable{
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
+	}	
+
+	public List<Vehicle> getVehicle() {
+		return vehicle;
 	}
 
 	@Override

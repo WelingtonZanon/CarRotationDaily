@@ -1,0 +1,120 @@
+package com.devsuperior.dslearnbds.resources.exceptions;
+
+import java.time.Instant;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.devsuperior.dslearnbds.services.exceptions.DatabaseException;
+import com.devsuperior.dslearnbds.services.exceptions.ForbiddenException;
+import com.devsuperior.dslearnbds.services.exceptions.ResourseNotFoundException;
+import com.devsuperior.dslearnbds.services.exceptions.UnauthorizedException;
+
+/*
+ * Uma classe para o spring escutar os erros dos controladores REST e tratar.
+ * Melhora o codigo do controlador para não ter que ficar editando try/cach em todas as requisições
+ */
+@ControllerAdvice
+public class ResourceExceptionHandler {
+	/*
+	 * identifica a classe para q o spring saiba o tipo de exeção que vai interceptar
+	 */
+	HttpStatus status;
+	
+	@ExceptionHandler (ResourseNotFoundException.class)
+	public ResponseEntity<StandardError> entityNotFound(ResourseNotFoundException e, HttpServletRequest request){
+		status = HttpStatus.NOT_FOUND;
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Resource not found");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		//comando propio do java para retornar a requizição de erro no body da pagina.
+		return ResponseEntity.status(status).body(err);
+	}
+	@ExceptionHandler (DatabaseException.class)
+	public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request){
+		status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Database exception");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		//comando propio do java para retornar a requizição de erro no body da pagina.
+		return ResponseEntity.status(status).body(err);
+	}
+	@ExceptionHandler (MethodArgumentNotValidException.class)
+	public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request){
+		status = HttpStatus.UNPROCESSABLE_ENTITY;
+		ValidationError err = new ValidationError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Validation exception");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		
+	/*
+	 * fieldError, para pegar o erro do "valid" do spring que foi passado nos DTO.
+	 * o BInding é da biblioteca bins validadion.
+	 */
+		for(FieldError f : e.getBindingResult().getFieldErrors()) {
+			err.addError(f.getField(), f.getDefaultMessage());
+		}
+		
+		//comando propio do java para retornar a requizição de erro no body da pagina.
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler (ForbiddenException.class)
+	public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e, HttpServletRequest request){
+		OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());		
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+	}
+	
+	@ExceptionHandler (UnauthorizedException.class)
+	public ResponseEntity<OAuthCustomError> unauthorized(UnauthorizedException e, HttpServletRequest request){
+		OAuthCustomError err = new OAuthCustomError("Unauthorized", e.getMessage());		
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
+	}
+	
+	
+	/*
+	 * @ExceptionHandler (AmazonServiceException.class) public
+	 * ResponseEntity<StandardError> amazonService(AmazonServiceException e,
+	 * HttpServletRequest request){ status = HttpStatus.BAD_REQUEST; StandardError
+	 * err = new StandardError(); err.setTimestamp(Instant.now());
+	 * err.setStatus(status.value()); err.setError("AWS Exception");
+	 * err.setMessage(e.getMessage()); err.setPath(request.getRequestURI());
+	 * //comando propio do java para retornar a requizição de erro no body da
+	 * pagina. return ResponseEntity.status(status).body(err); }
+	 * 
+	 * @ExceptionHandler (AmazonClientException.class) public
+	 * ResponseEntity<StandardError> amazonClient(AmazonClientException e,
+	 * HttpServletRequest request){ status = HttpStatus.BAD_REQUEST; StandardError
+	 * err = new StandardError(); err.setTimestamp(Instant.now());
+	 * err.setStatus(status.value()); err.setError("AWS Exception");
+	 * err.setMessage(e.getMessage()); err.setPath(request.getRequestURI());
+	 * //comando propio do java para retornar a requizição de erro no body da
+	 * pagina. return ResponseEntity.status(status).body(err); }
+	 */
+	@ExceptionHandler (IllegalArgumentException.class)
+	public ResponseEntity<StandardError> illegalArgument(IllegalArgumentException e, HttpServletRequest request){
+		status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Bad request");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		//comando propio do java para retornar a requizição de erro no body da pagina.
+		return ResponseEntity.status(status).body(err);
+	}	
+}
