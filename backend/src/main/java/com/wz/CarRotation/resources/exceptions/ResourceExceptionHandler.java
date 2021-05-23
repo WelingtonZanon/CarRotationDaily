@@ -1,4 +1,4 @@
-package com.devsuperior.dslearnbds.resources.exceptions;
+package com.wz.CarRotation.resources.exceptions;
 
 import java.time.Instant;
 
@@ -11,10 +11,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.devsuperior.dslearnbds.services.exceptions.DatabaseException;
-import com.devsuperior.dslearnbds.services.exceptions.ForbiddenException;
-import com.devsuperior.dslearnbds.services.exceptions.ResourseNotFoundException;
-import com.devsuperior.dslearnbds.services.exceptions.UnauthorizedException;
+import com.wz.CarRotation.services.exceptions.DatabaseException;
+import com.wz.CarRotation.services.exceptions.ResourseNotFoundException;
+import com.wz.CarRotation.services.exceptions.ValidationError;
 
 /*
  * Uma classe para o spring escutar os erros dos controladores REST e tratar.
@@ -53,7 +52,8 @@ public class ResourceExceptionHandler {
 	}
 	@ExceptionHandler (MethodArgumentNotValidException.class)
 	public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request){
-		status = HttpStatus.UNPROCESSABLE_ENTITY;
+		//status = HttpStatus.UNPROCESSABLE_ENTITY;
+		status = HttpStatus.BAD_REQUEST;
 		ValidationError err = new ValidationError();
 		err.setTimestamp(Instant.now());
 		err.setStatus(status.value());
@@ -73,38 +73,7 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 	
-	@ExceptionHandler (ForbiddenException.class)
-	public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e, HttpServletRequest request){
-		OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());		
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
-	}
-	
-	@ExceptionHandler (UnauthorizedException.class)
-	public ResponseEntity<OAuthCustomError> unauthorized(UnauthorizedException e, HttpServletRequest request){
-		OAuthCustomError err = new OAuthCustomError("Unauthorized", e.getMessage());		
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
-	}
-	
-	
-	/*
-	 * @ExceptionHandler (AmazonServiceException.class) public
-	 * ResponseEntity<StandardError> amazonService(AmazonServiceException e,
-	 * HttpServletRequest request){ status = HttpStatus.BAD_REQUEST; StandardError
-	 * err = new StandardError(); err.setTimestamp(Instant.now());
-	 * err.setStatus(status.value()); err.setError("AWS Exception");
-	 * err.setMessage(e.getMessage()); err.setPath(request.getRequestURI());
-	 * //comando propio do java para retornar a requizição de erro no body da
-	 * pagina. return ResponseEntity.status(status).body(err); }
-	 * 
-	 * @ExceptionHandler (AmazonClientException.class) public
-	 * ResponseEntity<StandardError> amazonClient(AmazonClientException e,
-	 * HttpServletRequest request){ status = HttpStatus.BAD_REQUEST; StandardError
-	 * err = new StandardError(); err.setTimestamp(Instant.now());
-	 * err.setStatus(status.value()); err.setError("AWS Exception");
-	 * err.setMessage(e.getMessage()); err.setPath(request.getRequestURI());
-	 * //comando propio do java para retornar a requizição de erro no body da
-	 * pagina. return ResponseEntity.status(status).body(err); }
-	 */
+
 	@ExceptionHandler (IllegalArgumentException.class)
 	public ResponseEntity<StandardError> illegalArgument(IllegalArgumentException e, HttpServletRequest request){
 		status = HttpStatus.BAD_REQUEST;
@@ -116,5 +85,5 @@ public class ResourceExceptionHandler {
 		err.setPath(request.getRequestURI());
 		//comando propio do java para retornar a requizição de erro no body da pagina.
 		return ResponseEntity.status(status).body(err);
-	}	
+	}
 }

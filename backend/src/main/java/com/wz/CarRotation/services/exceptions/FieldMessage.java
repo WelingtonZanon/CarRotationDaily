@@ -1,4 +1,4 @@
-package com.devsuperior.dslearnbds.resources.exceptions;
+package com.wz.CarRotation.services.exceptions;
 
 import java.io.Serializable;
 

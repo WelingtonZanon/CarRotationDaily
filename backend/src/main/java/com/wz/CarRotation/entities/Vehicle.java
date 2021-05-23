@@ -20,7 +20,7 @@ public class Vehicle implements Serializable{
 	private Long id;
 	private String brand;
 	private String model;
-	private Integer year;
+	private String year;
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -29,7 +29,7 @@ public class Vehicle implements Serializable{
 	public Vehicle() {		
 	}
 
-	public Vehicle(Long id, String brand, String model, Integer year, User user) {
+	public Vehicle(Long id, String brand, String model, String year, User user) {
 		this.id = id;
 		this.brand = brand;
 		this.model = model;
@@ -61,11 +61,11 @@ public class Vehicle implements Serializable{
 		this.model = model;
 	}
 
-	public Integer getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(Integer year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 
@@ -75,7 +75,7 @@ public class Vehicle implements Serializable{
 
 	public void setUser(User user) {
 		this.user = user;
-	}
+	}	
 
 	@Override
 	public int hashCode() {

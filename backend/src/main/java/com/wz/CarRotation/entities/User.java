@@ -13,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table (name = "tb_user")
 public class User implements Serializable{	
@@ -23,13 +21,19 @@ public class User implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	private String name;
+	
+	@Column(unique = true)
 	private String email;
+	
+	@Column(unique = true)
 	private String identity;
+	
 	@Column (columnDefinition= "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant birthDate;
 	
-	@JsonIgnore
+	
 	@OneToMany(mappedBy = "user")
 	private List<Vehicle> vehicle = new ArrayList<>();
 	

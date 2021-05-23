@@ -3,18 +3,33 @@ package com.wz.CarRotation.DTO;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.wz.CarRotation.entities.User;
 import com.wz.CarRotation.entities.Vehicle;
+import com.wz.CarRotation.service.validation.UserInsertValid;
 
+@UserInsertValid
 public class UserDTO {
-
+	
+	
 	private Long id;
+	
+	@NotBlank (message = "Campo obrigatório")
 	private String name;
+	
+	@NotBlank (message = "Campo obrigatório")
 	private String email;
+	
+	@NotBlank (message = "Campo obrigatório")
 	private String identity;
+	
+	@NotNull (message = "Campo obrigatório")
 	private Instant birthDate;
+	
+	
 	private List<VehicleDTO> vehicle = new ArrayList<>();
 	
 	public UserDTO() {

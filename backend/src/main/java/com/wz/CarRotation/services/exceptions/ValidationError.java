@@ -1,7 +1,9 @@
-package com.devsuperior.dslearnbds.resources.exceptions;
+package com.wz.CarRotation.services.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.wz.CarRotation.resources.exceptions.StandardError;
 
 public class ValidationError  extends StandardError {
 	private static final long serialVersionUID = 1L;

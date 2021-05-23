@@ -1,5 +1,7 @@
 package com.wz.CarRotation.DTO;
 
+import java.util.Calendar;
+
 import com.wz.CarRotation.entities.User;
 import com.wz.CarRotation.entities.Vehicle;
 
@@ -8,19 +10,22 @@ public class VehicleDTO {
 	private Long id;
 	private String brand;
 	private String model;
-	private Integer year;
+	private String year;
 	private String Valor;
+	
+	private String weekDay;
+	private boolean active = false;
 	
 	public VehicleDTO() {
 		
 	}
 
-	public VehicleDTO(Long id, String brand, String model, Integer year, String valor) {
+	public VehicleDTO(Long id, String brand, String model, String year, String valor, User user) {
 		this.id = id;
 		this.brand = brand;
 		this.model = model;
 		this.year = year;
-		Valor = valor;
+		this.Valor = valor;
 	}
 	
 	public VehicleDTO(Vehicle entity) {
@@ -55,11 +60,11 @@ public class VehicleDTO {
 		this.model = model;
 	}
 
-	public Integer getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(Integer year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 
@@ -70,6 +75,37 @@ public class VehicleDTO {
 	public void setValor(String valor) {
 		Valor = valor;
 	}
+	
+	
+	public boolean isActive() {
+		return active;
+	}
 
+	public String getWeekDay() {
+		Calendar calendar = Calendar.getInstance();
+		switch (Integer.parseInt(year.substring(3, 4))) {
+		case 0:case 1:			
+			weekDay = "segunda-feira";
+			if(2==calendar.get(Calendar.DAY_OF_WEEK)) active=true;
+			break;			
+		case 2:case 3:			
+			weekDay = "terça-feira";
+			if(3==calendar.get(Calendar.DAY_OF_WEEK)) active=true;
+			break;	
+		case 4:case 5:			
+			weekDay = "quarta-feira";
+			if(4==calendar.get(Calendar.DAY_OF_WEEK)) active=true;
+			break;
+		case 6:case 7:			
+			weekDay = "quinta-feira";
+			if(5==calendar.get(Calendar.DAY_OF_WEEK)) active=true;
+			break;
+		case 8:case 9:			
+			weekDay = "sexta-feira";
+			if(6==calendar.get(Calendar.DAY_OF_WEEK)) active=true;
+			break;
+		}
+		return weekDay;
+	}
 	
 }
